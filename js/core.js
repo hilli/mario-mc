@@ -344,7 +344,7 @@
 
   /* ------------------------------------------------------------------ race */
   const DIFFICULTY = { easy: 0.86, normal: 0.94, hard: 1.0 };
-  const AI_NAMES = ['Axel', 'Greta', 'Rocco', 'Ingrid', 'Diego', 'Freya', 'Hugo', 'Sasha', 'Kai', 'Mila'];
+  const AI_NAMES = ['Jens', 'Anthony', 'Rabbit', 'Norbert', 'Tom', 'Rajoslav', 'Radek', 'Player 1', 'Tenere Guy'];
 
   class Race {
     constructor(opts) {
