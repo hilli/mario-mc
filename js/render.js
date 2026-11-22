@@ -637,7 +637,7 @@
             if (alpha <= 0) return;
             ctx.globalAlpha = alpha;
             const wob = r.spinTime > 0 ? Math.sin(r.spinTime * 20) * 0.6 : 0;
-            drawBikeRear(ctx, r.bike, sx, sy, size, -r.lean + wob, { time, boost: r.boostTime > 0, star: r.starTime > 0, braking: false });
+            drawBikeRear(ctx, r.bike, sx, sy, size, r.lean + wob, { time, boost: r.boostTime > 0, star: r.starTime > 0, braking: false });
             if (size > 26) {
               ctx.font = '800 ' + Math.max(10, Math.min(18, size * 0.16)) + 'px system-ui, sans-serif';
               ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
@@ -679,7 +679,7 @@
       ctx.beginPath(); ctx.arc(p.x, p.y, p.r * (1.5 - p.life / p.max), 0, Math.PI * 2); ctx.fill();
     });
     ctx.globalAlpha = 1;
-    drawBikeRear(ctx, viewer.bike, width / 2, by + bounce, size, -viewer.lean + wob - drift, {
+    drawBikeRear(ctx, viewer.bike, width / 2, by + bounce, size, viewer.lean + wob + drift, {
       time, boost: viewer.boostTime > 0, star: viewer.starTime > 0, braking: view.braking,
     });
 
