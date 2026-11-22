@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1026">
+  <meta name="description" content="Mario MC — a Mario Kart style motorcycle racing game in your browser. Pick your rider name and adventure bike and race!">
+  <title>Mario MC — Moto Kart Grand Prix</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%8D%EF%B8%8F%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <canvas id="game" aria-label="Race view"></canvas>
+
+  <div id="touch-controls" class="hidden" aria-hidden="true">
+    <div id="joystick"><div id="joystick-knob"></div></div>
+    <div class="touch-buttons">
+      <button id="btn-drift" class="touch-btn" type="button">DRIFT</button>
+      <button id="btn-item" class="touch-btn item" type="button">ITEM</button>
+    </div>
+  </div>
+  <div id="hud-buttons" class="hidden">
+    <button id="btn-pause" type="button" aria-label="Pause">❚❚</button>
+  </div>
+
+  <section id="screen-title" class="screen active">
+    <div class="title-wrap">
+      <h1 class="logo"><span class="logo-a">MARIO</span><span class="logo-b">MC</span></h1>
+      <p class="tagline">Moto Kart Grand Prix</p>
+      <button class="btn primary big" type="button" data-action="to-setup">Start Engines</button>
+      <div class="controls-help">
+        <div><h3>Keyboard</h3>
+          <p><kbd>↑</kbd>/<kbd>W</kbd> throttle · <kbd>↓</kbd>/<kbd>S</kbd> brake · <kbd>←</kbd><kbd>→</kbd>/<kbd>A</kbd><kbd>D</kbd> steer</p>
+          <p><kbd>Space</kbd> use item · <kbd>Shift</kbd> drift (hold through corners for a mini-turbo) · <kbd>Esc</kbd> pause</p>
+          <p class="muted">2 players: P1 <kbd>WASD</kbd> + <kbd>Space</kbd>/<kbd>L-Shift</kbd> · P2 <kbd>Arrows</kbd> + <kbd>Enter</kbd>/<kbd>R-Shift</kbd></p>
+        </div>
+        <div><h3>Mobile &amp; gamepad</h3>
+          <p>Virtual joystick to steer (push up for gas, down to brake), plus <b>ITEM</b> and <b>DRIFT</b> buttons.</p>
+          <p class="muted">Gamepads work too: stick/D-pad, <b>A</b>/<b>RT</b> gas, <b>B</b>/<b>LT</b> brake, <b>X</b> item, <b>RB</b> drift.</p>
+        </div>
+      </div>
+      <p class="muted small">Tip: hold the throttle just as the last light goes out for a rocket start!</p>
+    </div>
+  </section>
+
+  <section id="screen-setup" class="screen">
+    <div class="setup-wrap">
+      <header class="setup-header">
+        <button class="btn ghost" type="button" data-action="to-title">← Back</button>
+        <h2>Choose your riders</h2>
+        <button class="btn primary" type="button" data-action="race">Race! →</button>
+      </header>
+
+      <div class="options">
+        <div class="opt">
+          <span class="opt-label">Players</span>
+          <div class="seg" id="opt-players">
+            <button type="button" data-value="1">1P</button>
+            <button type="button" data-value="2">2P split</button>
+          </div>
+        </div>
+        <div class="opt">
+          <span class="opt-label">Difficulty</span>
+          <div class="seg" id="opt-difficulty">
+            <button type="button" data-value="easy">Easy</button>
+            <button type="button" data-value="normal">Normal</button>
+            <button type="button" data-value="hard">Hard</button>
+          </div>
+        </div>
+        <div class="opt">
+          <span class="opt-label">Laps</span>
+          <div class="seg" id="opt-laps">
+            <button type="button" data-value="1">1</button>
+            <button type="button" data-value="3">3</button>
+            <button type="button" data-value="5">5</button>
+          </div>
+        </div>
+        <label class="opt check"><input type="checkbox" id="opt-autogas"> Auto-throttle (touch)</label>
+      </div>
+
+      <div id="player-panels" class="player-panels"></div>
+
+      <h3 class="section-title">Track</h3>
+      <div id="track-list" class="track-list"></div>
+    </div>
+  </section>
+
+  <section id="screen-pause" class="screen overlay">
+    <div class="card center">
+      <h2>Paused</h2>
+      <button class="btn primary" type="button" data-action="resume">Resume</button>
+      <button class="btn" type="button" data-action="restart">Restart race</button>
+      <button class="btn" type="button" data-action="toggle-mute"><span class="mute-label">Sound: on</span></button>
+      <button class="btn ghost" type="button" data-action="quit">Quit to setup</button>
+    </div>
+  </section>
+
+  <section id="screen-results" class="screen overlay">
+    <div class="card results">
+      <h2 id="results-title">Results</h2>
+      <div id="podium" class="podium"></div>
+      <table class="results-table">
+        <thead><tr><th>#</th><th>Rider</th><th>Motorcycle</th><th>Time</th><th>Best lap</th></tr></thead>
+        <tbody id="results-body"></tbody>
+      </table>
+      <div class="row">
+        <button class="btn primary" type="button" data-action="restart">Race again</button>
+        <button class="btn" type="button" data-action="quit">Change riders</button>
+      </div>
+    </div>
+  </section>
+
+  <button id="btn-mute" class="mute-toggle" type="button" data-action="toggle-mute" aria-label="Toggle sound">🔊</button>
+
+  <script src="js/bikes.js"></script>
+  <script src="js/core.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
